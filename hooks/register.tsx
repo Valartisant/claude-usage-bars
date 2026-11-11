@@ -74,7 +74,10 @@ export const register: Register = on => {
       const end = week.resetsAt ? Date.parse(week.resetsAt) : now + 7 * DAY
       day = Math.max(0, Math.min(6, Math.floor((now - (end - 7 * DAY)) / DAY)))
       dayPct = clamp(((week.percentUsed - day * share) / share) * 100)
-      lead = (day + 1) * share - week.percentUsed
+      const u = week.percentUsed
+      // + : avance non utilisée des jours précédents (manque pour entamer aujourd'hui)
+      // - : dépassement du quota cumulé jusqu'à aujourd'hui ; 0 : dans le jour courant
+      lead = u < day * share ? day * share - u : u > (day + 1) * share ? (day + 1) * share - u : 0
     }
     return (
       <Box>
@@ -88,7 +91,7 @@ export const register: Register = on => {
           <Text color={tone(dayPct)}>J{day + 1}/7 {sbar(dayPct)} {fmt(dayPct)}%  </Text>
         )}
         {week && Math.abs(lead) >= 0.05 && (
-          <Text color={lead > 0 ? 'green' : 'red'}>({lead > 0 ? '+' : ''}{fmt(lead)}%)</Text>
+          <Text color={lead > 0 ? 'green' : 'red'}>({lead > 0 ? '-' : '+'}{fmt(Math.abs(lead))}%)</Text>
         )}
       </Box>
     )
