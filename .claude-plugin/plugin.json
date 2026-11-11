@@ -1,0 +1,1 @@
+{ "name": "usage-bars", "version": "0.1.0", "description": "Volet permanent: barres d'usage 5h et hebdomadaire, avec quota journalier virtuel (1/7).", "types": "./types/index.d.ts" }
